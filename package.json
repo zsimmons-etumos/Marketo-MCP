@@ -1,0 +1,27 @@
+{
+  "name": "marketo-mcp",
+  "version": "1.0.0",
+  "description": "MCP server exposing the full Marketo REST API as tools for AI agents",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "agent": "tsx src/agent.ts"
+  },
+  "dependencies": {
+    "@langchain/anthropic": "^1.3.28",
+    "@langchain/core": "^1.1.42",
+    "@langchain/langgraph": "^1.2.9",
+    "@langchain/mcp-adapters": "^1.1.3",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "dotenv": "^16.4.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0"
+  }
+}
