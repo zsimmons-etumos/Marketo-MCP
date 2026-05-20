@@ -66,6 +66,58 @@ All configuration is via environment variables. Copy `.env.example` to `.env` an
 | `MARKETO_MCP_PORT` | `3201` | HTTP listen port |
 | `MCP_API_KEY` | (none) | If set, all MCP requests require `Authorization: Bearer <key>` |
 
+### Setting Up an MCP API Token
+
+The `MCP_API_KEY` controls who can connect to your MCP server. This is separate from your Marketo credentials — it protects the MCP server itself.
+
+**How it works:** You choose any secret string and set it as `MCP_API_KEY` in your `.env` file. The server then requires all incoming requests to include `Authorization: Bearer <your-key>` in the HTTP headers. Requests without a valid key get a `401 Unauthorized` response.
+
+**Step-by-step:**
+
+1. **Generate a random key** (or pick any strong secret string):
+   ```bash
+   # Option A: generate a random 32-character hex string
+   openssl rand -hex 32
+
+   # Option B: generate a UUID
+   uuidgen
+   ```
+
+2. **Add it to your `.env` file:**
+   ```
+   MCP_API_KEY=your-generated-key-here
+   ```
+
+3. **Configure your MCP client to send the key:**
+
+   - **Claude Desktop** — add an `Authorization` header in `claude_desktop_config.json`:
+     ```json
+     {
+       "mcpServers": {
+         "marketo": {
+           "url": "http://localhost:3201/mcp",
+           "headers": {
+             "Authorization": "Bearer your-generated-key-here"
+           }
+         }
+       }
+     }
+     ```
+
+   - **Built-in agent** — the agent connects locally and reads from the same `.env`, so no extra config is needed.
+
+   - **cURL / custom clients** — include the header in every request:
+     ```bash
+     curl -X POST http://localhost:3201/mcp \
+       -H "Authorization: Bearer your-generated-key-here" \
+       -H "Content-Type: application/json" \
+       -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
+     ```
+
+4. **Restart the server** after changing `.env`.
+
+**If you don't set `MCP_API_KEY`:** The server runs without authentication. Anyone who can reach port 3201 can make Marketo API calls through your server. This is fine for local development but **never do this in production or on a public network.**
+
 ### Optional — HTTPS
 
 | Variable | Default | Description |

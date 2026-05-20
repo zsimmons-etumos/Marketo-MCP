@@ -86,10 +86,24 @@ MARKETO_CLIENT_ID=paste-your-client-id-here
 MARKETO_CLIENT_SECRET=paste-your-client-secret-here
 ```
 
-Optionally add a security key (recommended):
-```
-MCP_API_KEY=pick-any-secret-password-here
-```
+### Step 3b: Set Up an API Token (Recommended)
+
+The API token protects your MCP server so only you (or your tools) can use it. Without one, anyone on your network could access your Marketo data through the server.
+
+1. **Generate a token** — open your terminal and run:
+   ```bash
+   openssl rand -hex 32
+   ```
+   This gives you a long random string like `a3f8b2c1d4e5...`. Copy it.
+
+2. **Add it to your `.env` file:**
+   ```
+   MCP_API_KEY=paste-your-random-string-here
+   ```
+
+3. **That's it for the server side.** When you set up Claude Desktop (Option B below), you'll need to paste this same token into the Claude config so it can authenticate.
+
+> **Why do this?** Your MCP server is a direct line to your Marketo instance. The API token is like a password for that line. If you're only running things locally on your own machine, it's optional — but it's a good habit, and it's required if you ever run the server on a shared network.
 
 ### Step 4: Start the Server
 
