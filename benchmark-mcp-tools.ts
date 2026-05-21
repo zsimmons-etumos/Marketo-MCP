@@ -50,9 +50,9 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   // Lists
   get_list_by_id: { listId: 1 },
   get_leads_by_list: { listId: 1 },
-  add_leads_to_list: { listId: 1, input: [{ id: 999999999 }] },
-  remove_leads_from_list: { listId: 1, input: [{ id: 999999999 }] },
-  is_lead_member_of_list: { listId: 1, input: [{ id: 999999999 }] },
+  add_leads_to_list: { listId: 1, leadIds: [999999999] },
+  remove_leads_from_list: { listId: 1, leadIds: [999999999] },
+  is_lead_member_of_list: { listId: 1, leadIds: [999999999] },
 
   // Companies
   get_companies: { filterType: "company", filterValues: "BenchmarkTestCo" },
@@ -85,15 +85,15 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   remove_named_accounts_from_list: { listId: 1, input: [{ name: "BenchmarkTestCo" }] },
 
   // Custom Objects
-  get_custom_objects: { name: "benchmark_c", filterType: "idField", filterValues: "BENCH999" },
-  create_update_custom_objects: { name: "benchmark_c", input: [{ benchmarkId: "BENCH999" }] },
-  delete_custom_objects: { name: "benchmark_c", input: [{ benchmarkId: "BENCH999" }] },
-  describe_custom_object: { name: "benchmark_c" },
+  get_custom_objects: { apiName: "benchmark_c", filterType: "idField", filterValues: "BENCH999" },
+  create_update_custom_objects: { apiName: "benchmark_c", input: [{ benchmarkId: "BENCH999" }] },
+  delete_custom_objects: { apiName: "benchmark_c", input: [{ benchmarkId: "BENCH999" }] },
+  describe_custom_object: { apiName: "benchmark_c" },
 
   // Program Members
-  get_program_members: { programId: 1 },
+  get_program_members: { programId: 1, filterType: "statusName", filterValues: "Member" },
   create_update_program_members: { programId: 1, input: [{ leadId: 999999999, status: "Member" }] },
-  change_program_member_status: { programId: 1, input: [{ leadId: 999999999 }], status: "Member" },
+  change_program_member_status: { programId: 1, input: [{ leadId: 999999999 }], statusName: "Member" },
 
   // Activities
   get_paging_token: { sinceDatetime: "2026-01-01T00:00:00Z" },
@@ -103,14 +103,15 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   add_custom_activity: { input: [{ leadId: 1, activityDate: "2026-01-01T00:00:00Z", activityTypeId: 100000, primaryAttributeValue: "bench" }] },
 
   // Custom Activity Types
-  create_custom_activity_type: { apiName: "benchmark_test_c", name: "Benchmark Test", triggerName: "Benchmark", filterName: "Benchmark" },
+  create_custom_activity_type: { apiName: "benchmark_test_c", name: "Benchmark Test", triggerName: "Benchmark", filterName: "Benchmark", primaryAttribute: { apiName: "benchAttr", name: "Bench Attr", dataType: "string" } },
 
   // Programs
   get_program_by_id: { programId: 1 },
   get_program_by_name: { name: "BenchmarkTest" },
-  clone_program: { programId: 1, name: "BenchmarkClone", folderId: 1, folderType: "Folder" },
+  clone_program: { programId: 1, name: "BenchmarkClone", folder: { id: 1, type: "Folder" } },
   delete_program: { programId: 999999999 },
-  create_program: { name: "BenchmarkProg", folderId: 1, folderType: "Folder", type: "Default" },
+  create_program: { name: "BenchmarkProg", folder: { id: 1, type: "Folder" }, type: "program", channel: "Online" },
+  update_program: { programId: 999999999, name: "BenchmarkProgUpdated" },
 
   // Smart Campaigns
   get_smart_campaign_by_id: { campaignId: 1 },
@@ -125,10 +126,11 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   get_email_by_id: { emailId: 1 },
   get_email_by_name: { name: "BenchmarkEmail" },
   get_email_content: { emailId: 1 },
-  create_email: { name: "BenchmarkEmail", folderId: 1, folderType: "Folder", template: 1 },
+  create_email: { name: "BenchmarkEmail", folder: { id: 1, type: "Folder" }, template: 1 },
   update_email: { emailId: 999999999, name: "BenchmarkEmailUpdated" },
   update_email_content_section: { emailId: 999999999, htmlId: "test", type: "Text", value: "test" },
-  clone_email: { emailId: 1, name: "BenchmarkEmailClone", folderId: 1, folderType: "Folder" },
+  clone_email: { emailId: 1, name: "BenchmarkEmailClone", folder: { id: 1, type: "Folder" } },
+  discard_email_draft: { emailId: 999999999 },
   approve_email: { emailId: 999999999 },
   unapprove_email: { emailId: 999999999 },
   delete_email: { emailId: 999999999 },
@@ -137,7 +139,7 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   // Email Templates
   get_email_template_by_id: { templateId: 1 },
   get_email_template_content: { templateId: 1 },
-  create_email_template: { name: "BenchmarkTemplate", folderId: 1, folderType: "Folder", content: "<html></html>" },
+  create_email_template: { name: "BenchmarkTemplate", folder: { id: 1, type: "Folder" }, content: "<html></html>" },
   approve_email_template: { templateId: 999999999 },
   unapprove_email_template: { templateId: 999999999 },
 
@@ -145,9 +147,9 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   get_landing_page_by_id: { pageId: 1 },
   get_landing_page_by_name: { name: "BenchmarkLP" },
   get_landing_page_content: { pageId: 1 },
-  create_landing_page: { name: "BenchmarkLP", folderId: 1, folderType: "Folder", template: 1 },
+  create_landing_page: { name: "BenchmarkLP", folder: { id: 1, type: "Folder" }, template: 1 },
   update_landing_page: { pageId: 999999999, name: "BenchmarkLPUpdated" },
-  clone_landing_page: { pageId: 1, name: "BenchmarkLPClone", folderId: 1, folderType: "Folder" },
+  clone_landing_page: { pageId: 1, name: "BenchmarkLPClone", folder: { id: 1, type: "Folder" } },
   approve_landing_page: { pageId: 999999999 },
   unapprove_landing_page: { pageId: 999999999 },
   discard_landing_page_draft: { pageId: 999999999 },
@@ -160,7 +162,7 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   // Forms
   get_form_by_id: { formId: 1 },
   get_form_fields: { formId: 1 },
-  clone_form: { formId: 1, name: "BenchmarkFormClone", folderId: 1, folderType: "Folder" },
+  clone_form: { formId: 1, name: "BenchmarkFormClone", folder: { id: 1, type: "Folder" } },
   approve_form: { formId: 999999999 },
   delete_form: { formId: 999999999 },
 
@@ -172,7 +174,7 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   // Folders
   get_folder_by_id: { folderId: 1 },
   get_folder_by_name: { name: "BenchmarkFolder" },
-  create_folder: { name: "BenchmarkFolder", parentId: 1, parentType: "Folder" },
+  create_folder: { name: "BenchmarkFolder", parent: { id: 1, type: "Folder" } },
   delete_folder: { folderId: 999999999 },
 
   // Files
@@ -182,7 +184,7 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   // Snippets
   get_snippet_by_id: { snippetId: 1 },
   get_snippet_content: { snippetId: 1 },
-  clone_snippet: { snippetId: 1, name: "BenchmarkSnippetClone", folderId: 1, folderType: "Folder" },
+  clone_snippet: { snippetId: 1, name: "BenchmarkSnippetClone", folder: { id: 1, type: "Folder" } },
   approve_snippet: { snippetId: 999999999 },
   delete_snippet: { snippetId: 999999999 },
 
@@ -204,15 +206,15 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   get_bulk_export_activities_file: { exportId: "benchmark-invalid" },
 
   // Bulk Export Custom Objects
-  create_bulk_export_custom_objects_job: { objectName: "benchmark_c", fields: ["benchmarkId"], filter: {} },
-  enqueue_bulk_export_custom_objects_job: { exportId: "benchmark-invalid" },
-  get_bulk_export_custom_objects_job_status: { exportId: "benchmark-invalid" },
+  create_bulk_export_custom_objects_job: { apiName: "benchmark_c", fields: ["benchmarkId"], filter: {} },
+  enqueue_bulk_export_custom_objects_job: { apiName: "benchmark_c", exportId: "benchmark-invalid" },
+  get_bulk_export_custom_objects_job_status: { apiName: "benchmark_c", exportId: "benchmark-invalid" },
 
   // Bulk Import
   get_bulk_import_leads_job_status: { batchId: 999999999 },
   get_bulk_import_leads_failures: { batchId: 999999999 },
   get_bulk_import_leads_warnings: { batchId: 999999999 },
-  get_bulk_import_custom_objects_jobs: { objectName: "benchmark_c" },
+  get_bulk_import_custom_objects_jobs: { apiName: "benchmark_c" },
 
   // Lead Fields
   create_lead_field: { name: "benchmarkField", displayName: "Benchmark Field", dataType: "string" },
@@ -224,7 +226,10 @@ const toolArgs: Record<string, Record<string, unknown>> = {
   approve_custom_object_type: { apiName: "benchmark_c" },
   discard_custom_object_type_draft: { apiName: "benchmark_c" },
   delete_custom_object_type: { apiName: "benchmark_c" },
-  add_custom_object_field: { apiName: "benchmark_c", fields: [{ name: "testField", displayName: "Test", dataType: "string" }] },
+  add_custom_object_field: { apiName: "benchmark_c", input: [{ name: "testField", displayName: "Test", dataType: "string" }] },
+
+  // Missing entries
+  get_segments: { segmentationId: 1 },
 };
 
 interface BenchResult {
