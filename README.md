@@ -67,7 +67,16 @@ pnpm install
 cp .env.example .env
 ```
 
-Edit `.env` with your Marketo credentials:
+Open the `.env` file in a text editor and fill in your Marketo credentials:
+
+```bash
+# macOS/Linux:
+nano .env
+# Windows (PowerShell):
+notepad .env
+```
+
+Here's what to fill in:
 
 ```env
 # Required — Marketo API
